@@ -1,0 +1,50 @@
+#!/bin/bash
+#
+#    10-sysinfo - generate the system information
+#    Copyright (c) 2013 Nick Charlton
+#
+#    Authors: Nick Charlton <hello@nickcharlton.net>
+#
+#    This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 2 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License along
+#    with this program; if not, write to the Free Software Foundation, Inc.,
+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+# The upstream version of this script was very inefficient - forking processes
+# when not needed. This version significantly reducses the number of processes
+# required to get the same info, and as a result is much, much faster.
+#
+# Additionally, static-ish stuff like the hostname and packages to install
+# is only generated once every 30 minutes (or as configured in cron).
+#
+# As a result, this shaves off the amount of time required to login to the system
+# by about 1 second or so, and when running as part of urxvt is nearly instant.
+
+#
+# BUGS:
+#  * If no swap space, the output is bogus ("-Nan%" or empty).
+#  * If primary network not eth0, no ip addr. Adjust to your proper interface.
+
+load=`awk '{print $1}' /proc/loadavg`
+root_usage=`df -h / | awk '/\// {print $(NF-1)}'`
+memory_usage=`awk '/^MemTotal:/ {total=$2} /^MemFree:/ {free=$2} /^Buffers:/ {buffers=$2} /^Cached:/ {cached=$2} END { printf("%3.1f%%", (total-(free+buffers+cached))/total*100)}' /proc/meminfo`
+swap_usage=`awk '/^SwapTotal:/ { total=$2 } /^SwapFree:/ { free=$2} END { printf("%3.1f%%", (total-free)/total*100 )}' /proc/meminfo`
+users=`users | wc -w`
+time=`awk '{uptime=$1} END {days = int(uptime/86400); hours = int((uptime-(days*86400))/3600); printf("%d days, %d hours", days, hours)}' /proc/uptime`
+processes=`/bin/ls -d /proc/[0-9]* | wc -l`
+ip=`/sbin/ifconfig eth0 | awk -F"[: ]+" '/inet addr:/{print $4}'`
+printf "System load:\t%s\t\tIP Address:\t%s\n" $load $ip
+printf "Memory usage:\t%s\t\tSystem uptime:\t%s\n" $memory_usage "$time"
+printf "Usage on /:\t%s\t\tSwap usage:\t%s\n" $root_usage $swap_usage
+printf "Local Users:\t%s\t\tProcesses:\t%s\n" $users $processes
+echo
+
