@@ -2,6 +2,8 @@
 
 Based on [Nick Charlton's tutorial](https://nickcharlton.net/posts/debian-ubuntu-dynamic-motd.html). Many thanks for his hard work.
 
+![Example motd](http://i.imgur.com/JwMncgu.png)
+
 ### Requirements
 * lsb-release
 * figlet
