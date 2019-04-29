@@ -8,8 +8,9 @@ Based on [Nick Charlton's tutorial](https://nickcharlton.net/posts/debian-ubuntu
 * lsb-release
 * figlet
 * lolcat
+* python-apt
 
-These can be installed with ```sudo apt-get install lsb-release figlet lolcat``` on debian
+These can be installed with ```sudo apt-get install lsb-release figlet lolcat python-apt``` on debian
 
 Note: Lolcat gets installed to /usr/games/ in a lot of cases so it may be necessary to run `ln -s $(which lolcat) /usr/local/bin/` to link it back to a normal bin location
 
