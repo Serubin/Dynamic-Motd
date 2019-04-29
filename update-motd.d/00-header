@@ -28,8 +28,8 @@ if [ -z "$DISTRIB_DESCRIPTION" ] && [ -x /usr/bin/lsb_release ]; then
         DISTRIB_DESCRIPTION=$(lsb_release -s -d)
 fi
 
+printf "Welcome to %s (%s).\n" "$DISTRIB_DESCRIPTION" "$(uname -r)"
+
 /usr/bin/env figlet "$(hostname)" | /usr/bin/env lolcat -f
 printf "\n"
 
-printf "Welcome to %s (%s).\n" "$DISTRIB_DESCRIPTION" "$(uname -r)"
-printf "\n"

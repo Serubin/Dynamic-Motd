@@ -41,7 +41,7 @@ swap_usage=`awk '/^SwapTotal:/ { total=$2 } /^SwapFree:/ { free=$2} END { printf
 users=`users | wc -w`
 time=`awk '{uptime=$1} END {days = int(uptime/86400); hours = int((uptime-(days*86400))/3600); printf("%d days, %d hours", days, hours)}' /proc/uptime`
 processes=`/bin/ls -d /proc/[0-9]* | wc -l`
-ip=`/sbin/ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'`
+ip=`echo $(ip addr | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1') | awk '{ print $1 }'`
 printf "System load:\t%s\t\tIP Address:\t%s\n" $load $ip
 printf "Memory usage:\t%s\t\tSystem uptime:\t%s\n" $memory_usage "$time"
 printf "Usage on /:\t%s\t\tSwap usage:\t%s\n" $root_usage $swap_usage
