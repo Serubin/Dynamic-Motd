@@ -12,7 +12,7 @@ sudo chmod +x /etc/update-motd.d/*
 
 # Update motd
 sudo rm /etc/motd
-sudo ln -s /var/run/motd /etc/motd
+sudo ln -s /var/run/motd.dynamic /etc/motd
 
 echo "Dynamic motd is now installed."
 echo "Make sure to disable 'printMotd' in the sshd config and to enable 'printLastLog'"
